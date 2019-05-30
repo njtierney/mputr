@@ -1,0 +1,67 @@
+---
+title: "explore"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{explore}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(tidyverse)
+library(Amelia)
+library(broom)
+library(naniar)
+
+# Use the africa dataset from Ameila
+data(africa)
+
+# Build some example models
+model_original1 <- lm(gdp_pc ~ trade + civlib, data = africa)
+model_original2 <- lm(gdp_pc ~ trade + civlib + infl, data = africa)
+
+set.seed(1234)
+
+imp_amelia <-
+  amelia(
+    x = africa,
+    m = 5,
+    cs = "country",
+    ts = "year",
+    logs = "gdp_pc",
+    p2s = 0
+  )
+
+shadow_africa <- as_shadow(africa)
+
+bind_row_n <- function(data, n){
+  
+  tibble::as_tibble(data[rep(seq_len(nrow(data)), n), ])
+  
+}
+
+bind_row_n(africa, 2)
+
+# helper to bind the original shadow data `m` times
+# adds .m option to as_shadow
+africa %>%
+  as_shadow() %>%
+  bind_row_n(10) %>%
+  mutate(m = rep("imp{1}"))
+
+models_imputed_df <-
+  bind_rows(unclass(imp_amelia$imputations), .id = "m") %>%
+  group_by(m) %>%
+  bind_cols(shadow_africa)
+  nest() %>%
+  mutate(model = data %>% map( ~ lm(gdp_pc ~ trade + civlib, data = .)))
+
+models_imputed_df
+```

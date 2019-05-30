@@ -1,0 +1,37 @@
+Package: mputr
+Title: Tidy Approaches for Multiple Imputation
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given = "Nicholas", 
+           family = "Tierney", 
+           email = "nicholas.tierney@gmail.com", 
+           role = c("aut", "cre"),
+           comment = c(ORCID = "https://orcid.org/0000-0003-1460-8722")),
+    person(given = "Andrew", 
+           family = "Heiss",
+           role = c("aut"),
+           email = "andrew@andrewheiss.com",
+           comment = c(ORCID = "0000-0002-3948-3914"))
+           )
+Description: An experimental package to provide broom tidier functions for
+  multiply imputed data.
+Depends: R (>= 3.5)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Imports: 
+    purrr,
+    dplyr,
+    tidyr,
+    Amelia,
+    broom,
+    generics,
+    magrittr,
+    stats,
+    tibble,
+    forcats
+RoxygenNote: 6.1.1
